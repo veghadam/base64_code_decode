@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Base64 Encoder/Decoder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 800px;
+    }
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <h1>Base64 Encoder/Decoder</h1>
+  <p>Paste text in the top textarea. If it is Base64 encoded, it will decode it; if not, it will encode it.</p>
+  
+  <!-- Input Textarea -->
+  <textarea id="input" rows="10" placeholder="Paste text here..."></textarea>
+  
+  <!-- Output Textarea -->
+  <textarea id="output" rows="10" placeholder="Result..." readonly></textarea>
+  
+  <script>
+    /**
+     * Checks if the given string is valid Base64.
+     * It does this by removing whitespace, checking the length,
+     * and trying to decode and re-encode the string.
+     */
+    function isValidBase64(str) {
+      const sanitized = str.replace(/\s+/g, '');
+      if (sanitized.length % 4 !== 0) {
+        return false;
+      }
+      try {
+        const decoded = atob(sanitized);
+        return btoa(decoded) === sanitized;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // Listen for input changes in the top textarea.
+    document.getElementById('input').addEventListener('input', function() {
+      const inputText = this.value.trim();
+      const outputArea = document.getElementById('output');
+
+      // Clear output if input is empty.
+      if (inputText === '') {
+        outputArea.value = '';
+        return;
+      }
+      
+      // If valid Base64, decode it.
+      if (isValidBase64(inputText)) {
+        try {
+          outputArea.value = atob(inputText);
+        } catch (e) {
+          outputArea.value = 'Error decoding Base64: ' + e;
+        }
+      } else {
+        // Otherwise, encode the text.
+        try {
+          outputArea.value = btoa(inputText);
+        } catch (e) {
+          outputArea.value = 'Error encoding to Base64: ' + e;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
